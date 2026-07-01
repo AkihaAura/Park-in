@@ -83,20 +83,26 @@ class _RegisterPageState extends State<RegisterPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Header dengan Tombol Back (Sesuai Figma)
-                      Row(
+                      Transform.translate(
+                        offset: const Offset(-20, 0), // Mempertahankan posisi agak ke kiri
+                        child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        
                         children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.arrow_back_ios_new_rounded,
-                              color: Colors.black,
-                              size: 24,
+                         Transform.translate(
+                              offset: const Offset(0, -5), 
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_back_ios_new_rounded,
+                                  color: Colors.black,
+                                  size: 24,
                             ),
                             constraints: const BoxConstraints(),
                             padding: EdgeInsets.zero,
                             onPressed: () => Navigator.pop(context),
-                          ),
-                          const SizedBox(width: 12),
+                          )),
+                          
+                          const SizedBox(width: 5), 
                           const Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,7 +128,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                           ),
                         ],
-                      ),
+                      )),
+
+                      
                       const SizedBox(height: 25),
 
                       // Ilustrasi Gembok & Kunci
