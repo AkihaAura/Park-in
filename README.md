@@ -32,3 +32,4 @@ Project Pengembangan Aplikasi Park'in untuk Android & IOS
 1. Push GitHub dan Upload Basic Park'in (Login, Create Account, Reset Password)
 2. Merapikan UI pada register dan forgot password
 3. Up Blueprint Home
+4. Tambah Halaman Home dan fixing error forgot password flow
