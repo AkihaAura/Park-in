@@ -81,14 +81,19 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Header dengan tombol Back
-                      Row(
+                      Transform.translate(
+                        offset: const Offset(-15, 0), // Menggeser 12 piksel ke kiri (-12), atas/bawah tetap (0)
+                        child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
+
                         children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.arrow_back_ios_new_rounded,
-                              color: Colors.black,
-                              size: 24,
+                         Transform.translate(
+                              offset: const Offset(0, -5), 
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_back_ios_new_rounded,
+                                  color: Colors.black,
+                                  size: 24,
                             ),
                             constraints: const BoxConstraints(),
                             padding: EdgeInsets.zero,
@@ -99,9 +104,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                 Navigator.pop(context);
                               }
                             },
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
+                         )),
+                          const SizedBox(width: 5),
+                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -128,6 +133,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             ),
                           ),
                         ],
+                      ),
                       ),
                       const SizedBox(height: 25),
 
