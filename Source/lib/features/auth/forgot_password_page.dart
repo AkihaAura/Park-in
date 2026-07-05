@@ -105,11 +105,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                               }
                             },
                          )),
-<<<<<<< HEAD
+//<<<<<<< HEAD
                           const SizedBox(width: 5),
-=======
+//=======
                           const SizedBox(width: 5), // INI DI UBAH (JARAK)
->>>>>>> a74874c01bfec3d1567372618e19bf07d9e8a138
                            Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
