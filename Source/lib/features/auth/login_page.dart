@@ -302,7 +302,7 @@ class _LoginPageState extends State<LoginPage> {
       final username = _usernameController.text;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Mencoba masuk sebagai $username...'),
+          content: Text('Welcome, $username!'),
           backgroundColor: const Color(0xFF0A60C2),
         ),
       );
