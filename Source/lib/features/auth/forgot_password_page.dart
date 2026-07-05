@@ -97,6 +97,36 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                   Icons.arrow_back_ios_new_rounded,
                                   color: Colors.black,
                                   size: 24,
+<<<<<<< HEAD
+=======
+                            ),
+                            constraints: const BoxConstraints(),
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              if (_isCodeSent) {
+                                setState(() => _isCodeSent = false);
+                              } else {
+                                Navigator.pop(context);
+                              }
+                            },
+                         )),
+//<<<<<<< HEAD
+                          const SizedBox(width: 5),
+//=======
+                          const SizedBox(width: 5), // INI DI UBAH (JARAK)
+                           Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _isCodeSent ? 'is this you?' : 'Hi!',
+                                  style: const TextStyle(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.black,
+                                    height: 1.1,
+                                  ),
+>>>>>>> 40f6c80cbda30439510a300a7ce35578df742dea
                                 ),
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,

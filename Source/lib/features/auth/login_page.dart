@@ -306,6 +306,7 @@ class _LoginPageState extends State<LoginPage> {
           backgroundColor: const Color(0xFF0A60C2),
         ),
       );
+      context.go('/home');
     }
   }
 }
