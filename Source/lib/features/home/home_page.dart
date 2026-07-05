@@ -1,455 +1,542 @@
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String userName; // <-- Menampung nama dinamis dari Login
+
+  const HomePage({
+    super.key,
+    this.userName = 'User', // Default-nya 'User' jika data tidak terkirim
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0; // Mengatur index menu bawah yang aktif
+  int _currentIndex = 0;
+
+  // Data Dummy untuk Last Activity (Dapat digeser ke samping)
+  final List<Map<String, String>> _lastActivities = [
+    {'title': 'Artos Mall Magelang', 'image': 'assets/images/artos_mall.jpg'},
+    {
+      'title': 'Sleman City Hall Jogjakarta',
+      'image': 'assets/images/sleman_city_hall.jpg',
+    },
+    {
+      'title': 'The Aloon Aloon Magelang',
+      'image': 'assets/images/aloon_aloon.jpg',
+    },
+  ];
+
+  // Data Dummy untuk Menu Fitur Utama Grid
+  final List<Map<String, dynamic>> _features = [
+    {
+      'name': 'Maps',
+      'icon': Icons.map_outlined,
+      'color': const Color(0xFFFFD2D7),
+    },
+    {
+      'name': 'Event',
+      'icon': Icons.calendar_month_outlined,
+      'color': const Color(0xFFCBEBFF),
+    },
+    {
+      'name': 'Booking',
+      'icon': Icons.confirmation_number_outlined,
+      'color': const Color(0xFFFFF0C2),
+    },
+    {
+      'name': 'Payment',
+      'icon': Icons.credit_card_outlined,
+      'color': const Color(0xFFFFE3D1),
+    },
+    {
+      'name': 'Voucher',
+      'icon': Icons.local_offer_outlined,
+      'color': const Color(0xFFFFE7C4),
+    },
+    {
+      'name': 'More...',
+      'icon': Icons.grid_view_rounded,
+      'color': const Color(0xFFE5E5E5),
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA), // Background abu-abu sangat muda bersih
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // ================= UTAMA: KONTEN SCROLL =================
+          // 1. Area Konten Utama (Scrollable Vertikal)
           SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 1. Header Biru dengan Background Lengkung
-                _buildHeader(screenSize),
-
-                const SizedBox(height: 24),
-
-                // 2. Bagian Feature (Menu Grid)
-                _buildFeatureSection(),
-
-                const SizedBox(height: 24),
-
-                // 3. Bagian Last Activity (Horizontal List)
-                _buildLastActivitySection(),
-
-                const SizedBox(height: 24),
-
-                // 4. Bagian What's New (Card Besar)
-                _buildWhatsNewSection(),
-
-                // Beri space tambahan di bawah agar konten tidak tertutup oleh Floating Navbar
-                const SizedBox(height: 100),
-              ],
-            ),
-          ),
-
-          // ================= FLOATING BOTTOM NAVIGATION BAR =================
-          _buildFloatingBottomNavbar(),
-        ],
-      ),
-    );
-  }
-
-  // 1. WIDGET HEADER & SEARCH BAR
-  Widget _buildHeader(Size screenSize) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        // Background Biru dengan lengkungan di bawah
-        Container(
-          height: screenSize.height * 0.25,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Color(0xFF0A60C2), // Menyelaraskan warna biru dari login/register
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(32),
-              bottomRight: Radius.circular(32),
-            ),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: SafeArea(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                // --- AREA HEADER BACKGROUND LANSKAP ---
+                Stack(
+                  clipBehavior: Clip.none,
                   children: [
-                    Text(
-                      'Welcome,',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                    Container(
+                      height: screenSize.height * 0.28,
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/home_bg.jpg'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 50, 24, 0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'Welcome,',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black.withValues(
+                                        alpha: 0.7,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    widget.userName,
+                                    style: const TextStyle(
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                      height: 1.1,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              CircleAvatar(
+                                radius: 24,
+                                backgroundColor: Colors.white.withValues(
+                                  alpha: 0.8,
+                                ),
+                                child: const Icon(
+                                  Icons.person,
+                                  size: 32,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                    Text(
-                      'User',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
+
+                    // --- START SEARCH BAR (MELAYANG MEMOTONG HEADER) ---
+                    Positioned(
+                      bottom: -24,
+                      left: 24,
+                      right: 24,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: const Color(0xFF8B1A1A),
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.08),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: const TextField(
+                          decoration: InputDecoration(
+                            hintText: 'Start Search...',
+                            hintStyle: TextStyle(
+                              color: Colors.black38,
+                              fontStyle: FontStyle.italic,
+                            ),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: Colors.black38,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(vertical: 14),
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
-                // Tombol Profil bulat putih halus
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: Colors.white.withValues(alpha: 0.2),
-                  child: const Icon(Icons.person, color: Colors.white, size: 28),
-                ),
-              ],
-            ),
-          ),
-        ),
-        // Search Bar yang melayang (Floating) di bawah header biru
-        Positioned(
-          bottom: -24,
-          left: 24,
-          right: 24,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 15,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Start Search...',
-                hintStyle: const TextStyle(color: Colors.black38),
-                prefixIcon: const Icon(Icons.search, color: Colors.black38),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
-  // 2. WIDGET FEATURE GRID
-  Widget _buildFeatureSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Feature',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
-          ),
-          const SizedBox(height: 16),
-          // Layout menggunakan Wrap agar otomatis turun ke bawah jika penuh (2 baris)
-          Wrap(
-            spacing: 20, // Jarak horizontal antar item
-            runSpacing: 16, // Jarak vertikal antar baris
-            alignment: WrapAlignment.spaceBetween,
-            children: [
-              _buildFeatureItem(Icons.map_outlined, 'Maps', const Color(0xFFFFE5E5), const Color(0xFFE53935)),
-              _buildFeatureItem(Icons.event_available_outlined, 'Event', const Color(0xFFE1F5FE), const Color(0xFF03A9F4)),
-              _buildFeatureItem(Icons.bookmark_outline, 'Booking', const Color(0xFFFFF8E1), const Color(0xFFFFB300)),
-              _buildFeatureItem(Icons.credit_card_outlined, 'Payment', const Color(0xFFFFE0B2), const Color(0xFFFB8C00)),
-              _buildFeatureItem(Icons.confirmation_number_outlined, 'Voucher', const Color(0xFFF3E5F5), const Color(0xFF8E24AA)),
-              _buildFeatureItem(Icons.grid_view_rounded, 'More...', const Color(0xFFECEFF1), const Color(0xFF78909C)),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+                const SizedBox(height: 45),
 
-  Widget _buildFeatureItem(IconData icon, String label, Color bgColor, Color iconColor) {
-    // Menyesuaikan ukuran lebar item agar pas 4 kolom di baris pertama
-    final itemWidth = (MediaQuery.of(context).size.width - 48 - 60) / 4;
-
-    return SizedBox(
-      width: itemWidth,
-      child: Column(
-        children: [
-          Container(
-            height: 54,
-            width: 54,
-            decoration: BoxDecoration(
-              color: bgColor,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: iconColor, size: 26),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black54),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-  }
-
-  // 3. WIDGET LAST ACTIVITY (HORIZONTAL LIST)
-  Widget _buildLastActivitySection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Last Activity',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: const Text(
-                  'See More...',
-                  style: TextStyle(fontSize: 12, color: Color(0xFF0A60C2), fontWeight: FontWeight.w600),
+                // --- SECTION 1: FEATURE GRID ---
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Text(
+                    'Feature',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          height: 130,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            children: [
-              _buildActivityCard('Artos Mall Magelang', 'Magelang', 'assets/images/parkingbg.jpg'),
-              _buildActivityCard('Sleman City Hall', 'Yogyakarta', 'assets/images/parkingbg.jpg'),
-              _buildActivityCard('The Aloon-Aloon', 'Magelang', 'assets/images/parkingbg.jpg'),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _features.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          mainAxisSpacing: 16,
+                          crossAxisSpacing: 8,
+                          childAspectRatio: 0.85,
+                        ),
+                    itemBuilder: (context, index) {
+                      final item = _features[index];
+                      return Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 28,
+                            backgroundColor: item['color'],
+                            child: Icon(
+                              item['icon'],
+                              color: const Color(0xFF5A5A5A),
+                              size: 28,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            item['name'],
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
 
-  Widget _buildActivityCard(String title, String location, String imagePath) {
-    return Container(
-      width: 140,
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Gambar Lokasi
-          Expanded(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
-              child: Container(
-                color: Colors.grey[300], // Fallback warna jika aset gambar belum ada
-                child: Image.asset(
-                  imagePath,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Center(child: Icon(Icons.image, color: Colors.grey));
-                  },
-                ),
-              ),
-            ),
-          ),
-          // Info Teks
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  location,
-                  style: const TextStyle(fontSize: 9, color: Colors.grey),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+                const SizedBox(height: 24),
 
-  // 4. WIDGET WHAT'S NEW (BANNER CARD BESAR)
-  Widget _buildWhatsNewSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "What's New",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            width: double.infinity,
-            height: 160,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(20),
-              image: const DecorationImage(
-                image: AssetImage('assets/images/parkingbg.jpg'), // Sesuaikan gambar banner nanti
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Stack(
-              children: [
-                // Lapisan Hitam Transparan di bagian bawah banner untuk teks
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(20),
-                        bottomRight: Radius.circular(20),
+                // --- SECTION 2: LAST ACTIVITY (HORIZONTAL LIST) ---
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Last Activity',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [Colors.black.withValues(alpha: 0.7), Colors.transparent],
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text(
+                          'See More...',
+                          style: TextStyle(color: Colors.grey, fontSize: 13),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 150,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(left: 24, right: 12),
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: _lastActivities.length,
+                    itemBuilder: (context, index) {
+                      final activity = _lastActivities[index];
+                      return Container(
+                        width: 170,
+                        margin: const EdgeInsets.only(right: 14),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  color: Colors.grey[300],
+                                  image: DecorationImage(
+                                    image: AssetImage(activity['image']!),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4),
+                              child: Text(
+                                activity['title']!,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                const SizedBox(height: 28),
+
+                // --- SECTION 3: WHAT'S NEW ---
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Text(
+                    'What\'s New',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Container(
+                    width: double.infinity,
+                    height: 210,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      color: Colors.grey[300],
+                      image: const DecorationImage(
+                        image: AssetImage('assets/images/aloon_aloon.jpg'),
+                        fit: BoxFit.cover,
                       ),
                     ),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Stack(
                       children: [
-                        Text(
-                          'ALOON-ALOON XXI',
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                        Text(
-                          'New Mall at your city, "The New Aloon-Aloon Mall"',
-                          style: TextStyle(color: Colors.white70, fontSize: 11),
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.vertical(
+                                bottom: Radius.circular(24),
+                              ),
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withValues(alpha: 0.75),
+                                ],
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                  'THE ALOON ALOON',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.2,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'New Mall at your city, "The Aloon Aloon Mall"',
+                                  style: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.7),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
+
+                const SizedBox(height: 110),
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
 
-  // 5. FLOATING BOTTOM NAVIGATION BAR WIDGET
-  Widget _buildFloatingBottomNavbar() {
-    return Positioned(
-      bottom: 20,
-      left: 24,
-      right: 24,
-      child: Container(
-        height: 64,
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 43, 43, 43).withValues(alpha: 0.85), // Gelap transparan modis
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildNavbarItem(Icons.home_outlined, Icons.home, 'Home', 0),
-            _buildNavbarItem(Icons.search, Icons.search, 'Search', 1),
-            
-            // Tombol QR / Ticket Tengah yang Menonjol Tinggi
-            Transform.translate(
-              offset: const Offset(0, -12),
-              child: Container(
-                height: 56,
-                width: 56,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFB3E5FC), // Biru sangat muda cerah sesuai foto
-                  shape: BoxShape.circle,
-                ),
-                child: IconButton(
-                  icon: const Icon(Icons.qr_code_scanner_rounded, color: Color(0xFF0A60C2), size: 28),
-                  onPressed: () {
-                    setState(() => _currentIndex = 2);
-                  },
-                ),
+          // 2. FLOATING BOTTOM NAVIGATION BAR (MENGIKUTI image_53d8a0.png)
+          Positioned(
+            bottom: 28,
+            left: 16,
+            right: 16,
+            child: Container(
+              height: 64,
+              padding: const EdgeInsets.symmetric(horizontal: 7),
+              decoration: BoxDecoration(
+                color: const Color(
+                  0xFFAAAAAA,
+                ).withValues(alpha: 0.75), // Latar bar abu-abu agak transparan
+                borderRadius: BorderRadius.circular(32),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 15,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: _buildNavItem(Icons.home_outlined, 'Home', 0),
+                  ),
+                  Expanded(child: _buildNavItem(Icons.search, 'Search', 1)),
+
+                  // --- TOMBOL TENGAH: TICKET (BULAT & MENONJOL KE ATAS) ---
+                  GestureDetector(
+                    onTap: () => setState(() => _currentIndex = 2),
+                    child: Transform.translate(
+                      offset: const Offset(
+                        0,
+                        -14,
+                      ), // Menjorok ke atas memotong bar induk
+                      child: Container(
+                        width: 72,
+                        height: 72,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: const Color.fromARGB(
+                            255,
+                            8,
+                            112,
+                            177,
+                          ), // Biru muda cerah sesuai gambar
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.qr_code_scanner_rounded,
+                              color: _currentIndex == 2
+                                  ? const Color.fromARGB(
+                                      255,
+                                      170,
+                                      205,
+                                      255,
+                                    ) // Tetap kontras biru tua kalau terpilih
+                                  : Colors.white, // Putih standar sesuai gambar
+                              size: 32,
+                            ),
+                            const SizedBox(height: 1),
+                            const Text(
+                              'Ticket',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  Expanded(
+                    child: _buildNavItem(Icons.shield_outlined, 'Security', 3),
+                  ),
+                  Expanded(
+                    child: _buildNavItem(
+                      Icons.person_outline_rounded,
+                      'Account',
+                      4,
+                    ),
+                  ),
+                ],
               ),
             ),
-
-            _buildNavbarItem(Icons.security_outlined, Icons.security, 'Security', 3),
-            _buildNavbarItem(Icons.person_outline_rounded, Icons.person, 'Account', 4),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildNavbarItem(IconData inactiveIcon, IconData activeIcon, String label, int index) {
+  // --- MODEL ITEM KAPSUL DINAMIS SESUAI image_53d8a0.png ---
+  Widget _buildNavItem(IconData icon, String label, int index) {
     final isSelected = _currentIndex == index;
+
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _currentIndex = index;
-        });
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            isSelected ? activeIcon : inactiveIcon,
-            color: isSelected ? Colors.white : Colors.white54,
-            size: 24,
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Colors.white54,
-              fontSize: 10,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+      onTap: () => setState(() => _currentIndex = index),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 3),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          // Jika dipilih -> Putih Terang. Jika tidak -> Kapsul Abu-abu Gelap.
+          color: isSelected
+              ? Colors.white
+              : const Color(0xFF666666).withValues(alpha: 0.9),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              // Jika dipilih -> Ikon Biru. Jika tidak -> Ikon Putih.
+              color: isSelected ? const Color(0xFF3B82F6) : Colors.white,
+              size: 22,
             ),
-          ),
-        ],
+            const SizedBox(height: 1),
+            Text(
+              label,
+              style: TextStyle(
+                // Jika dipilih -> Teks Biru. Jika tidak -> Teks Putih.
+                color: isSelected ? const Color(0xFF3B82F6) : Colors.white,
+                fontSize: 11,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

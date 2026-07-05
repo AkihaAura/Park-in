@@ -69,7 +69,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   borderRadius: BorderRadius.circular(36),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
+                      color: Colors.black.withOpacity(0.08),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -82,13 +82,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     children: [
                       // Header dengan tombol Back
                       Transform.translate(
-                        offset: const Offset(
-                          -15,
-                          0,
-                        ), // Menggeser 12 piksel ke kiri (-12), atas/bawah tetap (0)
+                        offset: const Offset(-15, 0),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
-
                           children: [
                             Transform.translate(
                               offset: const Offset(0, -5),
@@ -97,36 +93,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                   Icons.arrow_back_ios_new_rounded,
                                   color: Colors.black,
                                   size: 24,
-<<<<<<< HEAD
-=======
-                            ),
-                            constraints: const BoxConstraints(),
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              if (_isCodeSent) {
-                                setState(() => _isCodeSent = false);
-                              } else {
-                                Navigator.pop(context);
-                              }
-                            },
-                         )),
-//<<<<<<< HEAD
-                          const SizedBox(width: 5),
-//=======
-                          const SizedBox(width: 5), // INI DI UBAH (JARAK)
-                           Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _isCodeSent ? 'is this you?' : 'Hi!',
-                                  style: const TextStyle(
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.w800,
-                                    color: Colors.black,
-                                    height: 1.1,
-                                  ),
->>>>>>> 40f6c80cbda30439510a300a7ce35578df742dea
                                 ),
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
@@ -134,18 +100,20 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                   if (_isCodeSent) {
                                     setState(() => _isCodeSent = false);
                                   } else {
-                                    Navigator.pop(context);
+                                    context.pop();
                                   }
                                 },
                               ),
                             ),
-                            const SizedBox(width: 5),
+                            const SizedBox(
+                              width: 10,
+                            ), // JARAK SESUAI REVISI TIM
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    _isCodeSent ? 'is this you?' : 'Hi!',
+                                    _isCodeSent ? 'Is this you?' : 'Hi!',
                                     style: const TextStyle(
                                       fontSize: 32,
                                       fontWeight: FontWeight.w800,
@@ -153,6 +121,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                       height: 1.1,
                                     ),
                                   ),
+                                  const SizedBox(height: 4),
                                   Text(
                                     _isCodeSent
                                         ? 'Check your email box'

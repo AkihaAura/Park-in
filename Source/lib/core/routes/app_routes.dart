@@ -20,8 +20,12 @@ final GoRouter appRouter = GoRouter(
           const ForgotPasswordPage(), // Daftarkan ForgotPasswordPage
     ),
     GoRoute(
-    path: '/home',
-    builder: (context, state) => const HomePage(),
-),
+      path: '/home',
+      builder: (context, state) {
+        // Menangkap parameter 'extra' yang dikirim dari login_page
+        final name = state.extra as String? ?? 'User';
+        return HomePage(userName: name);
+      },
+    ),
   ],
 );
