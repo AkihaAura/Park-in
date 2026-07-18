@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../core/services/auth_service.dart';
+import '../../core/services/api_client.dart';
+import '../../core/session/session.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -9,12 +13,15 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
   final _emailPhoneController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailPhoneController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -145,11 +152,38 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 25),
 
+                      // Input Nama Lengkap
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: InputDecoration(
+                          hintText: 'Nama Lengkap...',
+                          hintStyle: const TextStyle(
+                            color: Colors.black38,
+                            fontStyle: FontStyle.italic,
+                          ),
+                          filled: true,
+                          fillColor: const Color(0xFFF0F0F0),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 16,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        validator: (value) =>
+                            value == null || value.trim().isEmpty
+                            ? 'Mohon isi nama Anda'
+                            : null,
+                      ),
+                      const SizedBox(height: 16),
+
                       // Input Email atau Nomor HP
                       TextFormField(
                         controller: _emailPhoneController,
                         decoration: InputDecoration(
-                          hintText: 'Email or Phone Number...',
+                          hintText: 'Email...',
                           hintStyle: const TextStyle(
                             color: Colors.black38,
                             fontStyle: FontStyle.italic,
@@ -245,19 +279,28 @@ class _RegisterPageState extends State<RegisterPage> {
                           width: 200,
                           height: 52,
                           child: ElevatedButton(
-                            onPressed: _handleRegister,
+                            onPressed: _isLoading ? null : _handleRegister,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF0A60C2),
                               foregroundColor: Colors.white,
                               shape: const StadiumBorder(),
                             ),
-                            child: const Text(
-                              'Create Account',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            child: _isLoading
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.5,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Create Account',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
@@ -272,9 +315,41 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void _handleRegister() {
-    if (_formKey.currentState!.validate()) {
-      // logika registrasi backend di sini
+  Future<void> _handleRegister() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final user = await AuthService.register(
+        name: _nameController.text.trim(),
+        email: _emailPhoneController.text.trim(),
+        password: _passwordController.text,
+      );
+      Session.instance.login(user);
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Akun berhasil dibuat, selamat datang ${user.name}!'),
+          backgroundColor: const Color(0xFF0A60C2),
+        ),
+      );
+      context.go('/home', extra: user.name);
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message), backgroundColor: Colors.red),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Tidak bisa terhubung ke server. Cek koneksi/API.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 }

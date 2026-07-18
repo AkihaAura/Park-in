@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/services/auth_service.dart';
+import '../../core/services/api_client.dart';
+import '../../core/session/session.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,6 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -123,20 +127,29 @@ class _LoginPageState extends State<LoginPage> {
                           width: 160,
                           height: 52,
                           child: ElevatedButton(
-                            onPressed: _handleLogin,
+                            onPressed: _isLoading ? null : _handleLogin,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF0A60C2),
                               foregroundColor: Colors.white,
                               shape: const StadiumBorder(),
                               elevation: 2,
                             ),
-                            child: const Text(
-                              'Login',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            child: _isLoading
+                                ? const SizedBox(
+                                    width: 22,
+                                    height: 22,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.5,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Login',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
@@ -166,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
     return TextFormField(
       controller: _usernameController,
       decoration: InputDecoration(
-        hintText: 'Username...',
+        hintText: 'Email...',
         hintStyle: const TextStyle(
           color: Colors.black38,
           fontStyle: FontStyle.italic,
@@ -207,7 +220,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
-          return 'Mohon masukkan username Anda';
+          return 'Mohon masukkan email Anda';
         }
         return null;
       },
@@ -297,18 +310,40 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _handleLogin() {
-    if (_formKey.currentState!.validate()) {
-      final username = _usernameController.text;
+  Future<void> _handleLogin() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final user = await AuthService.login(
+        _usernameController.text.trim(),
+        _passwordController.text,
+      );
+      Session.instance.login(user);
+
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Welcome, $username!'),
+          content: Text('Welcome, ${user.name}!'),
           backgroundColor: const Color(0xFF0A60C2),
         ),
       );
-
-      // Mengirimkan teks input dari username controller ke route /home menggunakan parameter extra
-      context.go('/home', extra: username);
+      context.go('/home', extra: user.name);
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message), backgroundColor: Colors.red),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Tidak bisa terhubung ke server. Cek koneksi/API.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 }

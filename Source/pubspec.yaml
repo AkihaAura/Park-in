@@ -32,6 +32,7 @@ dependencies:
     sdk: flutter
   go_router: ^14.0.0 # Mengatur navigasi antar-flow Figma
   flutter_svg: ^2.0.10 # Aset dari Figma diekspor ke SVG
+  http: ^1.2.2 # Memanggil REST API PHP (koneksi ke MySQL parkin_db)
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
