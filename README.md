@@ -33,3 +33,4 @@ Project Pengembangan Aplikasi Park'in untuk Android & IOS
 2. Merapikan UI pada register dan forgot password
 3. Up Blueprint Home
 4. Tambah Halaman Home dan fixing error forgot password flow
+5. Integrasi database
