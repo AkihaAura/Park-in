@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
   final String userName; // <-- Menampung nama dinamis dari Login
@@ -209,28 +210,35 @@ class _HomePageState extends State<HomePage> {
                         ),
                     itemBuilder: (context, index) {
                       final item = _features[index];
-                      return Column(
-                        children: [
-                          CircleAvatar(
-                            radius: 28,
-                            backgroundColor: item['color'],
-                            child: Icon(
-                              item['icon'],
-                              color: const Color(0xFF5A5A5A),
-                              size: 28,
+                      return GestureDetector(
+                        onTap: () {
+                          if (item['name'] == 'Booking') {
+                            context.push('/parking');
+                          }
+                        },
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 28,
+                              backgroundColor: item['color'],
+                              child: Icon(
+                                item['icon'],
+                                color: const Color(0xFF5A5A5A),
+                                size: 28,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            item['name'],
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
+                            const SizedBox(height: 8),
+                            Text(
+                              item['name'],
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                          ],
+                        ),
                       );
                     },
                   ),
@@ -427,7 +435,10 @@ class _HomePageState extends State<HomePage> {
 
                   // --- TOMBOL TENGAH: TICKET (BULAT & MENONJOL KE ATAS) ---
                   GestureDetector(
-                    onTap: () => setState(() => _currentIndex = 2),
+                    onTap: () {
+                      setState(() => _currentIndex = 2);
+                      context.push('/ticket');
+                    },
                     child: Transform.translate(
                       offset: const Offset(
                         0,
